@@ -22,7 +22,7 @@
           :key="item.name"
           clickable
           exact
-          @click="router.get(item.path)"
+          @click="item.method ? router[item.method](item.path) : router.get(item.path)"
         >
           <q-item-section avatar>
             <q-icon :name="item.icon" />
@@ -81,6 +81,7 @@ export default defineComponent({
         label: "Logout",
         icon: "logout",
         path: "/logout",
+        method: 'delete'
       },
     ]);
 

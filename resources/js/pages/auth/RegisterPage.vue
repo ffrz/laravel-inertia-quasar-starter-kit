@@ -1,5 +1,5 @@
 <template>
-  <q-page class="window-height window-width row justify-center items-center">
+  <q-page class="row justify-center items-center">
     <div class="column">
       <div class="row justify-center">
         <h5 class="text-h5 q-my-md">Register</h5>
@@ -12,7 +12,7 @@
                 square
                 filled
                 clearable
-                v-model="email"
+                v-model="form.email"
                 type="email"
                 label="Email Address"
               />
@@ -20,7 +20,7 @@
                 square
                 filled
                 clearable
-                v-model="password"
+                v-model="form.password"
                 type="password"
                 label="Password"
               />
@@ -28,7 +28,7 @@
                 square
                 filled
                 clearable
-                v-model="passwordConfirmed"
+                v-model="form.passwordConfirmed"
                 type="password"
                 label="Confirm Password"
               />
@@ -45,7 +45,7 @@
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
             <p class="text-grey-6">
-              Already reigistered? <a href="/login">Login</a>
+              Already reigistered? <Link href="/login">Login</Link>
             </p>
           </q-card-section>
         </q-card>
@@ -56,15 +56,19 @@
 
 <script setup>
 import { ref } from "vue";
-import AuthLayout from "../../layouts/AuthLayout.vue";
+import AuthLayout from "@/layouts/AuthLayout.vue";
+import { useForm } from "@inertiajs/vue3";
 
 defineOptions({
   layout: AuthLayout,
 });
 
-let email = ref(null);
-let password = ref(null);
-let passwordConfirmed = ref(null);
+let form = useForm({
+  email: '',
+  password: '',
+  passwordConfirmed: '',
+})
+
 </script>
 
 <style>

@@ -8,53 +8,21 @@
         <q-form ref="formEl" class="q-gutter-md" @submit.prevent="login">
           <q-card square bordered class="q-pa-lg shadow-1">
             <q-card-section>
-              <q-input
-                class="q-mb-lg"
-                square
-                filled
-                v-model="form.email"
-                label="Email"
-                lazy-rules
-                :error="form.errors.email && !isValid"
-                :rules="[
-                  (val) => validateEmail(val) || 'Must be a valid email.',
-                ]"
-              >
-                <template #error>
-                  <div id="error-alert">{{ form.errors.email }}</div>
-                </template>
-              </q-input>
-              <q-input
-
-                square
-                filled
-                v-model="form.password"
-                type="password"
-                label="Password"
-                :error="form.errors.password && !isValid"
-                lazy-rules
-                :rules="[
-                  (val) => (val && val.length > 0) || 'Please enter password',
-                ]"
-              >
-                <template #error>
-                  <div id="error-alert">{{ form.errors.password }}</div>
-                </template>
-              </q-input>
+              <q-input autofocus square v-model="form.email" label="Email" lazy-rules :error="!!form.errors.email"
+                :error-message="form.errors.email"
+                :rules="[(val) => validateEmail(val) || 'Must be a valid email.']" />
+              <q-input square v-model="form.password" type="password" label="Password" :error="!!form.errors.password"
+                :error-message="form.errors.password" lazy-rules
+                :rules="[(val) => (val && val.length > 0) || 'Please enter password',]" />
+              <q-checkbox class="q-mt-sm q-pl-none" style="margin-left: -10px;" v-model="form.remember" label="Remember me" />
             </q-card-section>
-            <q-card-actions class="q-px-md">
-              <q-btn
-                type="submit"
-                unelevated
-                color="primary"
-                size="lg"
-                class="full-width"
-                label="Login"
-              />
+            <q-card-actions>
+              <q-btn type="submit" color="primary" class="full-width" label="Login" />
             </q-card-actions>
-            <q-card-section class="text-center q-pa-none">
+            <q-card-section class="text-center q-pa-none q-mt-md">
               <p class="text-grey-6">
-                Not reigistered? <Link href="/register">Create an Account</Link>
+                Not reigistered?
+                <Link href="/register">Create an Account</Link>
               </p>
             </q-card-section>
           </q-card>

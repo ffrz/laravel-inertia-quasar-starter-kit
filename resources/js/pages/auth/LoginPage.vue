@@ -5,16 +5,17 @@
         <h5 class="text-h5 q-my-md">Login to My App</h5>
       </div>
       <div class="row">
-        <q-form ref="formEl" class="q-gutter-md" @submit.prevent="login">
+        <q-form class="q-gutter-md" @submit.prevent="login">
           <q-card square bordered class="q-pa-lg shadow-1">
             <q-card-section>
-              <q-input autofocus square v-model="form.email" label="Email" lazy-rules :error="!!form.errors.email"
-                :error-message="form.errors.email"
+              <q-input ref="emailInput" autofocus square v-model.trim="form.email" label="Email" lazy-rules
+                :error="!!form.errors.email" :error-message="form.errors.email"
                 :rules="[(val) => validateEmail(val) || 'Must be a valid email.']" />
               <q-input square v-model="form.password" type="password" label="Password" :error="!!form.errors.password"
                 :error-message="form.errors.password" lazy-rules
                 :rules="[(val) => (val && val.length > 0) || 'Please enter password',]" />
-              <q-checkbox class="q-mt-sm q-pl-none" style="margin-left: -10px;" v-model="form.remember" label="Remember me" />
+              <q-checkbox class="q-mt-sm q-pl-none" style="margin-left: -10px;" v-model="form.remember"
+                label="Remember me" />
             </q-card-section>
             <q-card-actions>
               <q-btn type="submit" color="primary" class="full-width" label="Login" />
@@ -41,7 +42,7 @@ defineOptions({
   layout: AuthLayout,
 });
 
-let formEl = ref(null);
+let emailInput = ref(null);
 let form = useForm({
   email: "",
   password: "",
@@ -50,7 +51,12 @@ let form = useForm({
 
 const login = () => {
   form.clearErrors();
-  form.post("/login");
+  form.post("/login", {
+    preserveScroll: true,
+    onError: () => {
+      emailInput.value.focus();
+    }
+  });
 };
 
 function validateEmail(email) {

@@ -8,11 +8,11 @@
         <q-form class="q-gutter-md" @submit.prevent="register">
           <q-card square bordered class="q-pa-lg shadow-1">
             <q-card-section>
-              <q-input autofocus class="q-mb-lg" square v-model="form.name" label="Name" lazy-rules
+              <q-input autofocus class="q-mb-lg" square v-model.trim="form.name" label="Name" lazy-rules
                 :error="!!form.errors.name" :error-message="form.errors.name" :rules="[
                   (val) => (val && val.length > 0) || 'Please enter your name.',
                 ]" />
-              <q-input square v-model="form.email" type="email" label="Email Address" lazy-rules
+              <q-input square v-model.trim="form.email" type="email" label="Email Address" lazy-rules
                 :error="!!form.errors.email" :error-message="form.errors.email"
                 :rules="[(val) => validateEmail(val) || 'Must be a valid email.']" />
               <q-input square v-model="form.password" type="password" label="Password" lazy-rules

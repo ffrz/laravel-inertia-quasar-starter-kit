@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { defineComponent } from "vue";
+import { defineComponent, onMounted, onUnmounted } from "vue";
 
 defineComponent({
   name: 'AuthLayout'

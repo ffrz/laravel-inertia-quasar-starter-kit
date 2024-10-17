@@ -30,7 +30,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(AppServiceProvider::HOME);
+        $request->session()->flash('success', 'You are logged in.');
+        return redirect('/');
     }
 
     /**
@@ -44,6 +45,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        $request->session()->flash('success', 'You are logged out.');
+
+        return redirect('/login');
     }
 }

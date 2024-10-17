@@ -48,6 +48,8 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        $request->session()->flash('success', 'You are logged in.');
+
         return redirect()->intended(AppServiceProvider::HOME);
     }
 }

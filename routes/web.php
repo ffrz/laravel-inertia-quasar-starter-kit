@@ -21,8 +21,11 @@ Route::middleware('auth')->group(function() {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/about', [PageController::class, 'about'])->name('about');
 
+    Route::get('users', function () {
+        return inertia('user/UserListPage');
+    });
     Route::controller(UserController::class)->prefix('user')->group(function () {
         Route::get('', 'index');
-        Route::get('data', 'data');
+        Route::delete('', 'destroy');
     });
 });

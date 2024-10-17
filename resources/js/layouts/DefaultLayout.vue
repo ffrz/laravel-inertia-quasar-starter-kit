@@ -64,7 +64,7 @@ const navItems = ref([
     name: "user-list",
     label: "Users",
     icon: "people",
-    path: "/user/",
+    path: "/users",
   },
   {
     name: "logout",

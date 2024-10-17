@@ -130,11 +130,7 @@ const deleteUser = (row) => {
   }).onOk(() => {
     loading.value = true;
     axios
-      .delete("user", {
-        params: {
-          id: row.id,
-        },
-      })
+      .delete("users/"+row.id)
       .then((response) => {
         console.log(response);
         var removeIndex = rows.value.map((item) => item.id).indexOf(row.id);
@@ -169,7 +165,7 @@ const fetchUsers = (
 ) => {
   const { page, rowsPerPage, sortBy, descending } = props;
   axios
-    .get("user", {
+    .get("users", {
       params: {
         page: page,
         per_page: rowsPerPage,

@@ -28,9 +28,14 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    public function destroy(Request $request)
+
+    public function create(Request $request)
     {
-        $user = User::findOrFail($request->id);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
         if ($user->id == Auth::user()->id) {
             return response()->json([
                 'message' => 'Cannot delete current user!'

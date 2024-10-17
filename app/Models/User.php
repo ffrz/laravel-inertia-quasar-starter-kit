@@ -58,11 +58,6 @@ class User extends Authenticatable
     //     return $this->belongsTo(Account::class);
     // }
 
-    public function getNameAttribute()
-    {
-        return $this->first_name.' '.$this->last_name;
-    }
-
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = Hash::needsRehash($password) ? Hash::make($password) : $password;
@@ -75,7 +70,7 @@ class User extends Authenticatable
 
     public function scopeOrderByName($query)
     {
-        $query->orderBy('last_name')->orderBy('first_name');
+        $query->orderBy('name');
     }
 
     public function scopeWhereRole($query, $role)
@@ -90,8 +85,7 @@ class User extends Authenticatable
     {
         $query->when($filters['search'] ?? null, function ($query, $search) {
             $query->where(function ($query) use ($search) {
-                $query->where('first_name', 'like', '%'.$search.'%')
-                    ->orWhere('last_name', 'like', '%'.$search.'%')
+                $query->where('name', 'like', '%'.$search.'%')
                     ->orWhere('email', 'like', '%'.$search.'%');
             });
         })->when($filters['role'] ?? null, function ($query, $role) {

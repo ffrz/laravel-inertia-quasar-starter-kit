@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::delete('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -19,4 +20,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function() {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/about', [PageController::class, 'about'])->name('about');
+
+    Route::controller(UserController::class)->prefix('user')->group(function () {
+        Route::get('', 'index');
+        Route::get('data', 'data');
+    });
 });

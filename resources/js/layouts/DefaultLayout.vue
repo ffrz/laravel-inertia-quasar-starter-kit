@@ -42,8 +42,6 @@ import { router, usePage } from "@inertiajs/vue3";
 const page = usePage();
 const user = page.props.auth.user;
 
-console.log(user)
-
 defineComponent({
   name: "DefaultLayout",
 });
@@ -61,6 +59,12 @@ const navItems = ref([
     label: "About",
     icon: "info",
     path: "/about",
+  },
+  {
+    name: "user-list",
+    label: "Users",
+    icon: "people",
+    path: "/user/",
   },
   {
     name: "logout",

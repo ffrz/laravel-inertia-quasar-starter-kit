@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
@@ -25,7 +22,8 @@ class UserController extends Controller
             $q->orWhere('email', 'like', '%' . $search . '%');
         }
 
-        $users = $q->paginate($request->get('per_page', 10))->withQueryString();
+        $users = $q->paginate($request->get('per_page', 10))
+            ->withQueryString();
 
         return response()->json($users);
     }
@@ -72,7 +70,7 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'User data updated!',
+            'message' => 'User updated!',
             'data' => $user,
         ]);
     }
@@ -88,5 +86,9 @@ class UserController extends Controller
         }
 
         $user->delete();
+
+        return response()->json([
+            'message' => 'User successfully deleted!'
+        ]);
     }
 }

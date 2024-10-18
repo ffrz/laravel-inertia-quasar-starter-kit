@@ -187,37 +187,28 @@ const deleteUser = (row) => {
     loading.value = true;
     axios
       .delete("users/" + row.id)
-      .then((/*response*/) => {
-        // var removeIndex = rows.value.map((item) => item.id).indexOf(row.id);
-        // ~removeIndex && rows.value.splice(removeIndex, 1);
-        $q.notify("User " + row.email + " has been deleted.");
+      .then((response) => {
+        $q.notify(response.data.message);
         fetchUsers();
       })
       .finally(() => {
         loading.value = false;
       })
       .catch((error) => {
-        if (error && error.status == 409) {
-          $q.notify({
-            message: error.response.data.message
-              ? error.response.data.message
-              : error.message,
-            color: "red",
-          });
+        let message = '';
+        if (error.response.data && error.response.data.message) {
+          message = error.response.data.message;
         }
-        else {
-          $q.notify({
-            message: error.response.data.message ? error.response.data.message : error.message,
-            color: "red",
-          });
+        else if (error.message) {
+          message = error.message;
         }
+        $q.notify({ message: message, color: "red" });
         console.log(error);
       });
   });
 };
 
 const fetchUsers = (props = null) => {
-  console.log(props);
   let params = {
     page: pagination.value.page,
     per_page: pagination.value.rowsPerPage,

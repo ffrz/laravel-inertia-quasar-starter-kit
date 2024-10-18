@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 
 class UserController extends Controller
 {
@@ -28,9 +28,51 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-
-    public function create(Request $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|unique:users,email|min:3|max:100',
+            'password' => 'required|min:5|max:40',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->string('password')),
+        ]);
+
+        return response()->json([
+            'message' => 'New user created!',
+            'data' => $user,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $rules = [
+            'name' => 'required|max:255',
+            'email' => 'required|unique:users,email,' . $id . '|min:3|max:100',
+        ];
+
+        if ($request->get('password') != '') {
+            $rules['password'] = 'required|min:5|max:40';
+        }
+
+        $request->validate($rules);
+
+        $user = User::find($id);
+
+        $user->fill($request->only(['name', 'email']));
+        if ($request->get('password') != '') {
+            $user->password = Hash::make($request->string('password'));
+        }
+        $user->save();
+
+        return response()->json([
+            'message' => 'User data updated!',
+            'data' => $user,
+        ]);
     }
 
     public function destroy(Request $request, $id)

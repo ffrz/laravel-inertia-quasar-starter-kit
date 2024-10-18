@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh LpR fFf">
     <q-header elevated>
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
@@ -26,19 +26,22 @@
       <slot></slot>
     </q-page-container>
 
-    <q-footer elevated>
-      <q-tabs>
-        <q-route-tab exact v-for="item in navItems" :key="item.name" :to="item.path" :name="item.name" :icon="item.icon"
-          :label="item.label" />
+    <!-- Footer hanya tampil jika di tampilan screen kecil, lihat di bagian style di bawah pada file ini -->
+    <!-- <q-footer elevated>
+      <q-tabs v-model="tab" indicator-color="yellow" class="bg-primary text-white shadow-2">
+        <q-tab name="mails" icon="mail" label="Mails" />
+        <q-tab name="alarms" icon="alarm" label="Alarms" />
+        <q-tab name="movies" icon="movie" label="Movies" />
       </q-tabs>
-    </q-footer>
+    </q-footer> -->
   </q-layout>
 </template>
 
 <script setup>
-import { defineComponent, onUnmounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 
+const tab = ref();
 const page = usePage();
 const user = page.props.auth.user;
 

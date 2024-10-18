@@ -24,8 +24,5 @@ Route::middleware('auth')->group(function() {
     Route::get('user', function () {
         return inertia('user/UserListPage');
     });
-    Route::controller(UserController::class)->prefix('users')->group(function () {
-        Route::get('/', 'index');
-        Route::delete('/{id}', 'destroy');
-    });
+    Route::resource('users', UserController::class);
 });

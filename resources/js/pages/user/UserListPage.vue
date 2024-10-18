@@ -3,7 +3,7 @@
     <div class="q-pa-md">
       <q-table ref="tableRef" flat bordered :dense="$q.screen.lt.md" color="primary" row-key="id" virtual-scroll
         v-model:pagination="pagination" :filter="filter" :loading="loading" :columns="columns" :rows="rows"
-        :rows-per-page-options="[10, 25, 50]" @request="onRequest" binary-state-sort>
+        :rows-per-page-options="[10, 25, 50]" @request="fetchUsers" binary-state-sort>
 
         <template v-slot:loading>
           <q-inner-loading showing color="red" />
@@ -157,14 +157,15 @@ const submitForm = () => {
         showUserEditor.value = false;
         form.reset();
         $q.notify(response.message);
+        fetchUsers();
 
-        if (editorMode.value == 'add') {
-          rows.value.unshift(response.data);
-        }
-        else {
-          currentRow.name = response.data.name;
-          currentRow.email = response.data.email;
-        }
+        // if (editorMode.value == 'add') {
+        //   rows.value.unshift(response.data);
+        // }
+        // else {
+        //   currentRow.name = response.data.name;
+        //   currentRow.email = response.data.email;
+        // }
       }
     }
   );
@@ -173,7 +174,6 @@ const submitForm = () => {
 function validateEmail(email) {
   return /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/.test(email);
 }
-
 
 const deleteUser = (row) => {
   $q.dialog({
@@ -187,10 +187,11 @@ const deleteUser = (row) => {
     loading.value = true;
     axios
       .delete("users/" + row.id)
-      .then((response) => {
-        var removeIndex = rows.value.map((item) => item.id).indexOf(row.id);
-        ~removeIndex && rows.value.splice(removeIndex, 1);
+      .then((/*response*/) => {
+        // var removeIndex = rows.value.map((item) => item.id).indexOf(row.id);
+        // ~removeIndex && rows.value.splice(removeIndex, 1);
         $q.notify("User " + row.email + " has been deleted.");
+        fetchUsers();
       })
       .finally(() => {
         loading.value = false;
@@ -204,47 +205,53 @@ const deleteUser = (row) => {
             color: "red",
           });
         }
+        else {
+          $q.notify({
+            message: error.response.data.message ? error.response.data.message : error.message,
+            color: "red",
+          });
+        }
         console.log(error);
       });
   });
 };
 
-const fetchUsers = (
-  props = {
-    page: 1,
-    rowsPerPage: 10,
-    sortBy: "name",
-    descending: false,
-  },
-  filter = ""
-) => {
-  const { page, rowsPerPage, sortBy, descending } = props;
+const fetchUsers = (props = null) => {
+  console.log(props);
+  let params = {
+    page: pagination.value.page,
+    per_page: pagination.value.rowsPerPage,
+    order_by: pagination.value.sortBy,
+    order_type: pagination.value.descending ? "desc" : "asc",
+    filter: filter.value,
+  };
+
+  if (props != null) {
+    params.page = props.pagination.page;
+    params.per_page = props.pagination.rowsPerPage;
+    params.order_by = props.pagination.sortBy
+    params.order_type = props.pagination.descending ? 'desc' : 'asc';
+    params.filter = props.filter;
+    filter.value = props.filter;
+  }
+
+  loading.value = true;
+
   axios
-    .get("users", {
-      params: {
-        page: page,
-        per_page: rowsPerPage,
-        order_by: sortBy,
-        order_type: descending ? "desc" : "asc",
-        filter: filter,
-      },
-    })
+    .get("users", { params: params })
     .then((response) => {
-      const data = response.data;
-      rows.value = data.data;
-      pagination.value.page = data.current_page;
-      pagination.value.rowsPerPage = data.per_page;
-      pagination.value.rowsNumber = data.total;
-      pagination.value.sortBy = sortBy;
-      pagination.value.descending = descending;
+      rows.value = response.data.data;
+      pagination.value.page = response.data.current_page;
+      pagination.value.rowsPerPage = response.data.per_page;
+      pagination.value.rowsNumber = response.data.total;
+      if (props) {
+        pagination.value.sortBy = props.pagination.sortBy;
+        pagination.value.descending = props.pagination.descending;
+      }
     })
     .finally(() => {
       loading.value = false;
     });
-};
-
-const onRequest = (props) => {
-  fetchUsers(props.pagination, props.filter);
 };
 
 function wrapCsvValue(val, formatFn, row) {

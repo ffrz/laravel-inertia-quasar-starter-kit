@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
@@ -78,15 +80,13 @@ class UserController extends Controller
     public function destroy(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
         if ($user->id == Auth::user()->id) {
             return response()->json([
                 'message' => 'Cannot delete current user!'
             ], 409);
         }
 
-        if ($user) {
-            $user->delete();
-            return response()->noContent();
-        }
+        $user->delete();
     }
 }
